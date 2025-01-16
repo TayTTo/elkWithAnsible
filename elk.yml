@@ -32,22 +32,31 @@
           - elasticsearch
           - kibana
 
-  #  - name: Enable daemon
-  #    systemd_service: 
-  #      name: daemon-reload
-        #state: restarted
+#    - name: Enable daemon
+#      systemd_service: 
+#        name: daemon-reload
+#        state: restarted
+
+    - name: reload daemon
+      command: >
+        /bin/systemctl daemon-reload
+
+    - name: Enable elasticsearch
+      systemd_service:
+        daemon_reload: true
+        name: elasticsearch.service
+        enabled: true
 
     - name: Set the elasticsearch config file
       template:
         src: templates/elasticsearch.yml
         dest: /etc/elasticsearch/elasticsearch.yml
-        mode: '0750'
+        mode: '0755'
 
     - name: Start Elasticsearch
       systemd_service:
-        daemon_reload: true
         name: elasticsearch.service
-        enabled: true
+        state: started
 
     - name: Generate enrollment token
       command: > 
@@ -57,11 +66,21 @@
     - debug:
         msg: "The token enrollment is {{ token.stdout }}"
 
+    - name: reload daemon
+      command: >
+        /bin/systemctl daemon-reload
+
     - name: Enable kibana
       systemd_service: 
         daemon_reload: true
         name: kibana.service
         enabled: true
+
+    - name: Set the elasticsearch config file
+      template:
+        src: templates/kibana.yml
+        dest: /etc/kibana/kibana.yml
+        mode: '0755'
 
     - name: start kibana
       systemd_service:
@@ -70,15 +89,23 @@
 
     - name: Get user and password from elastic
       shell: >
-        /usr/share/bin/elasticsearch-reset-password -u elastic
+        echo y | /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
       register: password
 
     - debug: 
-        msg: "The password for elastic is {{ password.stdou }}"
+        msg: "The password for elastic is {{ password.stdout }}"
 
-    - name: Get Code from kibana
-      service_facts: 
+#    - name: Get Code from kibana
+#      service_facts: 
+#      #register: services_state
+#
+#    - debug:
+#        var: ansible_facts['services']['kibana']
+
+    - name: Get code from kibana
+      command: >
+        systemctl status kibana
+      register: status
 
     - debug:
-        msg: ansible_facts.services['kibana']
-
+        msg: "{{ status.stdout }}"

@@ -1,4 +1,10 @@
 # Learn Ansible
+**Learning resource:**
+- Books:
+    - Ansible for Devops(https://www.ansiblefordevops.com/)
+    - Ansible Up and Running
+
+- Document: Officical doc from red hat(https://docs.ansible.com/ansible/latest/index.html)
 ## Step 1:
 Deploy virtual machine with vagrant and libvirt
 Write a file named Vagrantfile and run `vagrant up`
@@ -56,8 +62,6 @@ vagrant | SUCCESS => {
 - Run the command `ansible-playbook elk.yml`
 > Result: 
 ```
-tayto@taytaoto:~/Documents/ELKwithAnsible$ ansible-playbook elk.yml
-[WARNING]: Found both group and host with same name: vagrant
  ___________________
 < PLAY [Deploy elk] >
  -------------------
@@ -76,10 +80,6 @@ tayto@taytaoto:~/Documents/ELKwithAnsible$ ansible-playbook elk.yml
                 ||----w |
                 ||     ||
 
-The authenticity of host '192.168.121.82 (192.168.121.82)' can't be established.
-ED25519 key fingerprint is SHA256:/6f7x1VIAHTIx7nXacYYJZc8Txtfq+m2vOaHIImlJjs.
-This key is not known by any other names.
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 ok: [vagrant]
  _______________________________
 < TASK [Import elastic PGP key] >
@@ -90,7 +90,7 @@ ok: [vagrant]
                 ||----w |
                 ||     ||
 
-changed: [vagrant]
+ok: [vagrant]
  _________________________
 < TASK [Install from apt] >
  -------------------------
@@ -100,7 +100,7 @@ changed: [vagrant]
                 ||----w |
                 ||     ||
 
-changed: [vagrant]
+ok: [vagrant]
  ________________________________________
 < TASK [Save the repository definition.] >
  ----------------------------------------
@@ -120,7 +120,89 @@ changed: [vagrant]
                 ||----w |
                 ||     ||
 
+ok: [vagrant]
+ ______________________
+< TASK [reload daemon] >
+ ----------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
 changed: [vagrant]
+ _____________________________
+< TASK [Enable elasticsearch] >
+ -----------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+ok: [vagrant]
+ __________________________________________
+< TASK [Set the elasticsearch config file] >
+ ------------------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+ok: [vagrant]
+ ____________________________
+< TASK [Start Elasticsearch] >
+ ----------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+ok: [vagrant]
+ __________________________________
+< TASK [Generate enrollment token] >
+ ----------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+changed: [vagrant]
+ ______________
+< TASK [debug] >
+ --------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+ok: [vagrant] => {
+    "msg": "The token enrollment is eyJ2ZXIiOiI4LjE0LjAiLCJhZHIiOlsiMTkyLjE2OC4xMjEuODI6OTIwMCJdLCJmZ3IiOiI2N2M5MTFiMDFjZDA4ZGIyMGYzNmU2M2QxODYzZWMyYTdmNDQwMzk1N2U0MDA1ZTEwZGM2MDhiZjc4MTU0ZDQ3Iiwia2V5IjoiRjNONGI1UUJscU9YeEI0VFV2bVA6bjZpOTk0V2JRaGV1eF8wTUxDSDlzdyJ9"
+}
+ ______________________
+< TASK [reload daemon] >
+ ----------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+changed: [vagrant]
+ ______________________
+< TASK [Enable kibana] >
+ ----------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+ok: [vagrant]
  __________________________________________
 < TASK [Set the elasticsearch config file] >
  ------------------------------------------
@@ -131,9 +213,19 @@ changed: [vagrant]
                 ||     ||
 
 changed: [vagrant]
- ____________________________
-< TASK [Start Elasticsearch] >
- ----------------------------
+ _____________________
+< TASK [start kibana] >
+ ---------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+ok: [vagrant]
+ ___________________________________________
+< TASK [Get user and password from elastic] >
+ -------------------------------------------
         \   ^__^
          \  (oo)\_______
             (__)\       )\/\
@@ -141,26 +233,40 @@ changed: [vagrant]
                 ||     ||
 
 changed: [vagrant]
- __________________________________
-< TASK [Generate enrollment token] >
- ----------------------------------
+ ______________
+< TASK [debug] >
+ --------------
         \   ^__^
          \  (oo)\_______
             (__)\       )\/\
                 ||----w |
                 ||     ||
 
-fatal: [vagrant]: FAILED! => {"changed": true, "cmd": ["/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token", "-s", "kibana"], "delta": "0:00:01.494982", "end": "2025-01-16 03:22:19.693878", "msg": "non-zero return code", "rc": 69, "start": "2025-01-16 03:22:18.198896", "stderr": "\nERROR: Failed to determine the health of the cluster. , with exit code 69", "stderr_lines": ["", "ERROR: Failed to determine the health of the cluster. , with exit code 69"], "stdout": "", "stdout_lines": []}
- ____________
-< PLAY RECAP >
- ------------
+ok: [vagrant] => {
+    "msg": "The password for elastic is This tool will reset the password of the [elastic] user to an autogenerated value.\nThe password will be printed in the console.\n\n\nPassword for the [elastic] user successfully reset.\nNew value: 2ZhQiv_*g4n_SYaGs1Zm"
+}
+ _____________________________
+< TASK [Get code from kibana] >
+ -----------------------------
         \   ^__^
          \  (oo)\_______
             (__)\       )\/\
                 ||----w |
                 ||     ||
 
-vagrant                    : ok=7    changed=6    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
+changed: [vagrant]
+ ______________
+< TASK [debug] >
+ --------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+ok: [vagrant] => {
+    "msg": "● kibana.service - Kibana\n     Loaded: loaded (/lib/systemd/system/kibana.service; enabled; vendor preset: enabled)\n     Active: active (running) since Thu 2025-01-16 13:17:45 UTC; 58min ago\n       Docs: https://www.elastic.co\n   Main PID: 575 (node)\n      Tasks: 11 (limit: 2256)\n     Memory: 127.2M\n     CGroup: /system.slice/kibana.service\n             └─575 /usr/share/kibana/bin/../node/glibc-217/bin/node /usr/share/kibana/bin/../src/cli/dist\n\nJan 16 13:17:46 ubuntu2004.localdomain kibana[575]: Native global console methods have been overridden in production environment.\nJan 16 13:17:48 ubuntu2004.localdomain kibana[575]: [2025-01-16T13:17:48.163+00:00][INFO ][root] Kibana is starting\nJan 16 13:17:48 ubuntu2004.localdomain kibana[575]: [2025-01-16T13:17:48.208+00:00][INFO ][node] Kibana process configured with roles: [background_tasks, ui]\nJan 16 13:17:55 ubuntu2004.localdomain kibana[575]: [2025-01-16T13:17:54.963+00:00][INFO ][plugins-service] The following plugins are disabled: \"cloudChat,cloudExperiments,cloudFullStory,dataUsage,investigateApp,investigate,profilingDataAccess,profiling,searchHomepage,searchIndices,securitySolutionServerless,serverless,serverlessObservability,serverlessSearch\".\nJan 16 13:17:55 ubuntu2004.localdomain kibana[575]: [2025-01-16T13:17:55.036+00:00][INFO ][http.server.Preboot] http server running at http://localhost:5601\nJan 16 13:17:55 ubuntu2004.localdomain kibana[575]: [2025-01-16T13:17:55.166+00:00][INFO ][plugins-system.preboot] Setting up [1] plugins: [interactiveSetup]\nJan 16 13:17:55 ubuntu2004.localdomain kibana[575]: [2025-01-16T13:17:55.181+00:00][INFO ][preboot] \"interactiveSetup\" plugin is holding setup: Validating Elasticsearch connection configuration…\nJan 16 13:17:55 ubuntu2004.localdomain kibana[575]: [2025-01-16T13:17:55.207+00:00][INFO ][root] Holding setup until preboot stage is completed.\nJan 16 13:18:02 ubuntu2004.localdomain kibana[575]: i Kibana has not been configured.\nJan 16 13:18:02 ubuntu2004.localdomain kibana[575]: Go to http://localhost:5601/?code=840497 to get started."
+}
 ```
 
-
+As result, central components consists of elasticsearch and kibana should be depoloy successfully

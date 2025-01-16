@@ -53,7 +53,7 @@ path.logs: /var/log/elasticsearch
 # By default Elasticsearch is only accessible on localhost. Set a different
 # address here to expose this node on the network:
 #
-#network.host: localhost
+network.host: 192.168.121.242
 #
 # By default Elasticsearch listens for HTTP traffic on the first free port it
 # finds starting at 9200. Set a specific HTTP port here:
@@ -107,6 +107,7 @@ xpack.security.transport.ssl:
 # Create a new cluster with the current node only
 # Additional nodes can still join the cluster later
 #cluster.initial_master_nodes: ["duyanhserver"]
+discovery.type: single-node
 
 # Allow HTTP API connections from anywhere
 # Connections are encrypted and require user authentication
