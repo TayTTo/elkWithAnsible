@@ -1,0 +1,84 @@
+---
+- name: Deploy elk
+  hosts: all
+  become: true
+
+  tasks:
+    #- name: Create install elasticsearch directory
+    #  file:
+    #    path: "~/elastic-install"
+    #    state: directory
+    #    mode: 0755
+
+    - name: Import elastic PGP key
+      apt_key:
+        id: 46095ACC8548582C1A2699A9D27D666CD88E42B4
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        keyring: /usr/share/keyrings/elasticsearch-keyring.gpg
+
+    - name: Install from apt
+      package:
+        name: apt-transport-https
+        state: present
+
+    - name: Save the repository definition.
+      shell: >
+        echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+
+    - name: Install elasticsearch and kibana
+      package:
+        update_cache: true
+        name:
+          - elasticsearch
+          - kibana
+
+  #  - name: Enable daemon
+  #    systemd_service: 
+  #      name: daemon-reload
+        #state: restarted
+
+    - name: Set the elasticsearch config file
+      template:
+        src: templates/elasticsearch.yml
+        dest: /etc/elasticsearch/elasticsearch.yml
+        mode: '0750'
+
+    - name: Start Elasticsearch
+      systemd_service:
+        daemon_reload: true
+        name: elasticsearch.service
+        enabled: true
+
+    - name: Generate enrollment token
+      command: > 
+        /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
+      register: token
+
+    - debug:
+        msg: "The token enrollment is {{ token.stdout }}"
+
+    - name: Enable kibana
+      systemd_service: 
+        daemon_reload: true
+        name: kibana.service
+        enabled: true
+
+    - name: start kibana
+      systemd_service:
+        state: started
+        name: kibana.service
+
+    - name: Get user and password from elastic
+      shell: >
+        /usr/share/bin/elasticsearch-reset-password -u elastic
+      register: password
+
+    - debug: 
+        msg: "The password for elastic is {{ password.stdou }}"
+
+    - name: Get Code from kibana
+      service_facts: 
+
+    - debug:
+        msg: ansible_facts.services['kibana']
+
